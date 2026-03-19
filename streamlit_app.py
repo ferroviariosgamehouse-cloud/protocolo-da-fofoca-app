@@ -4,21 +4,28 @@ import json
 import pandas as pd
 import time
 
+st.set_page_config(page_title="MuleSoft", layout="wide")
+
 st.title("🗣️ Protocolo de Fofocas")
 
-url = "https://anypoint.mulesoft.com/mocking/api/v1/links/001ec433-4dda-4176-8c2b-105a425ce25a/fofoca"
+url = "https://anypoint.mulesoft.com/mocking/api/v1/links/15a23c7c-fc30-4cb2-99f0-18868470d8bd/fofoca"
 
-# O segredo está aqui: tudo que compõe o formulário fica "dentro" do WITH
-with st.form("fofoca_form"):
-    st.write("Preencha os dados da fofoca:")
-    
-    # Campos do formulário
-    emissor = st.text_input("Quem contou?")
-    categoria = st.selectbox("Setor", ["TI", "RH", "Diretoria"])
-    conteudo = st.text_area("O Segredo")
-    
-    # ESTE BOTÃO PRECISA ESTAR AQUI DENTRO DO 'WITH'
-    submitted = st.form_submit_button("Espalhar Fofoca! 🚀")
+col_envio, col_monitor = st.columns([1, 1.5], gap="large")
+
+
+with col_envio:
+    st.header("📤 Enviar Nova Fofoca")
+    # O segredo está aqui: tudo que compõe o formulário fica "dentro" do WITH
+    with st.form("fofoca_form"):
+        st.write("Preencha os dados da fofoca:")
+        
+        # Campos do formulário
+        emissor = st.text_input("Quem contou?")
+        categoria = st.selectbox("Setor", ["TI", "RH", "Diretoria"])
+        conteudo = st.text_area("O Segredo")
+        
+        # ESTE BOTÃO PRECISA ESTAR AQUI DENTRO DO 'WITH'
+        submitted = st.form_submit_button("Espalhar Fofoca! 🚀")
 
 # A lógica de envio acontece DEPOIS que o botão é clicado
 if submitted:
@@ -44,7 +51,8 @@ if submitted:
         st.warning("Escreva a fofoca antes de enviar!")
 
 
-
+with col_monitor:
+    st.header("📥 Mural de Fofocas (API Get)")
 
 # Configuração da Página
 st.write("Monitor de Fofocas via API:")
@@ -63,6 +71,28 @@ def fetch_fofocas_from_mule():
     except Exception as e:
         st.error(f"Não foi possível conectar à API: {e}")
         return []
+
+# Espaço para os cards
+    
+placeholder = st.empty()
+
+with placeholder.container():
+    dados = fetch_fofocas_from_mule()
+    if dados is None:
+            st.warning("Não foi possível conectar à API de leitura do Mule.")
+    elif not dados:
+            st.info("Nenhuma fofoca processada ainda...")
+    else:
+            # Mostra as 5 mais recentes de forma elegante
+            for item in dados[:5]: 
+                with st.container(border=True):
+                    c1, c2 = st.columns([3, 1])
+                    c1.markdown(f"**{item.get('emissor', 'Anônimo')}** disse:")
+                    c1.write(f"_{item.get('mensagem', '')}_")
+                    c2.status(item.get('categoria', 'geral').upper())
+
+if st.button("🔄 Forçar Atualização"):
+        st.rerun()
 
 # Sidebar para controle
 st.sidebar.header("Configurações")
