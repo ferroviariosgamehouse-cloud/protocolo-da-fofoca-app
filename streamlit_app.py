@@ -52,29 +52,33 @@ if submitted:
 
 
 with col_monitor:
-    st.header("📥 Mural de Fofocas (API Get)")
 
-# Configuração da Página
-st.write("Monitor de Fofocas via API:")
-
-
-
-# Função para consumir a API do Mule
-def fetch_fofocas_from_mule():
-    try:
-        response = requests.get(url, timeout=5)
-        if response.status_code == 200:
-            return response.json()
-        else:
-            st.error(f"Erro na API do Mule: {response.status_code}")
+    # Função para consumir a API do Mule
+    def fetch_fofocas_from_mule():
+        try:
+            response = requests.get(url, timeout=5)
+            if response.status_code == 200:
+                return response.json()
+            else:
+                st.error(f"Erro na API do Mule: {response.status_code}")
+                return []
+        except Exception as e:
+            st.error(f"Não foi possível conectar à API: {e}")
             return []
-    except Exception as e:
-        st.error(f"Não foi possível conectar à API: {e}")
-        return []
 
 # Espaço para os cards
     
 placeholder = st.empty()
+
+def get_notification_style(count):
+    # Dicionário para transformar números normais em sobrescrito (¹ ² ³ ⁴...)
+    superscripts = str.maketrans("0123456789", "⁰¹²³⁴⁵⁶⁷⁸⁹")
+    
+    # Transforma o número, ex: 5 vira ⁵
+    count_top = str(count).translate(superscripts)
+    
+    # Retorna o ícone + o número no alto em negrito
+    return count_top
 
 with placeholder.container():
     dados = fetch_fofocas_from_mule()
@@ -82,52 +86,38 @@ with placeholder.container():
             st.warning("Não foi possível conectar à API de leitura do Mule.")
     elif not dados:
             st.info("Nenhuma fofoca processada ainda...")
-    else:
-            # Mostra as 5 mais recentes de forma elegante
-            for item in dados[:5]: 
-                with st.container(border=True):
-                    c1, c2 = st.columns([3, 1])
-                    c1.markdown(f"**{item.get('emissor', 'Anônimo')}** disse:")
-                    c1.write(f"_{item.get('mensagem', '')}_")
-                    c2.status(item.get('categoria', 'geral').upper())
+    else:            
+                        
+            st.header("📥 Total de Fofocas " + get_notification_style(len(dados)))
+            
+            
+            
+            cols = st.columns(3)           
+            for idx, item in enumerate(dados): 
+                with cols[idx % 3]:
+                    with st.container(border=True):
+                        
+                        categoria = item.get("categoria", "Geral").upper()
+                        emissor = item.get("emissor", "Anônimo")
+                        msg = item.get("mensagem", "...")
+                        
+                        st.markdown(f"### 📍 {categoria}")
+                        st.caption(f"Enviado por: {emissor}")
+                        st.write(msg)
+                        
 
 if st.button("🔄 Forçar Atualização"):
         st.rerun()
 
 # Sidebar para controle
 st.sidebar.header("Configurações")
-auto_refresh = st.sidebar.checkbox("Atualização Automática (5s)", value=True)
+auto_refresh = st.sidebar.checkbox("Atualização Automática (20s)", value=True)
 
 # Lógica de atualização
 if "last_update" not in st.session_state:
     st.session_state.last_update = time.time()
 
-# Busca os dados
-dados = fetch_fofocas_from_mule()
-
-if not dados:
-    st.info("Aguardando novas fofocas serem processadas...")
-else:
-    # Mostra os dados em métricas no topo
-    st.columns(3)[0].metric("Total de Fofocas:", len(dados))
-    
-    st.divider()
-
-    # Exibição em Grid
-    cols = st.columns(3)
-    for idx, item in enumerate(dados):
-        with cols[idx % 3]:
-            with st.container(border=True):
-                # Ajuste os campos abaixo conforme o JSON que seu Mule retorna
-                categoria = item.get("categoria", "Geral").upper()
-                emissor = item.get("emissor", "Anônimo")
-                msg = item.get("mensagem", "...")
-                
-                st.markdown(f"### 📍 {categoria}")
-                st.caption(f"Enviado por: {emissor}")
-                st.write(msg)
-
 # Script de auto-refresh simples
 if auto_refresh:
-    time.sleep(5)
+    time.sleep(20)
     st.rerun()
