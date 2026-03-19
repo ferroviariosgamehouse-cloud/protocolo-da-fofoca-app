@@ -6,7 +6,7 @@ import time
 
 st.set_page_config(page_title="MuleSoft", layout="wide")
 
-st.title("🗣️ Protocolo de Fofocas")
+st.title("🗣️ Meetup da Fofoca")
 
 url = "https://anypoint.mulesoft.com/mocking/api/v1/links/15a23c7c-fc30-4cb2-99f0-18868470d8bd/fofoca"
 
@@ -14,15 +14,15 @@ col_envio, col_monitor = st.columns([1, 1.5], gap="large")
 
 
 with col_envio:
-    st.header("📤 Enviar Nova Fofoca")
+    st.header("📤 Rádio Corredor")
     # O segredo está aqui: tudo que compõe o formulário fica "dentro" do WITH
     with st.form("fofoca_form"):
-        st.write("Preencha os dados da fofoca:")
+        st.write("Commitar Intriga 💣:")
         
         # Campos do formulário
-        emissor = st.text_input("Quem contou?")
-        categoria = st.selectbox("Setor", ["TI", "RH", "Diretoria"])
-        conteudo = st.text_area("O Segredo")
+        emissor = st.text_input("Porta-voz do Caos (quem contou)?")
+        categoria = st.selectbox("Cluster de Origem(setor)", ["TI", "RH", "Diretoria", "Almoxarifado"])
+        conteudo = st.text_area("O Veneno 🐍 (Base64 não obrigatório)")
         
         # ESTE BOTÃO PRECISA ESTAR AQUI DENTRO DO 'WITH'
         submitted = st.form_submit_button("Espalhar Fofoca! 🚀")
@@ -88,7 +88,7 @@ with placeholder.container():
             st.info("Nenhuma fofoca processada ainda...")
     else:            
                         
-            st.header("📥 Total de Fofocas " + get_notification_style(len(dados)))
+            st.header("📥 Dashboard da vida alheia " + get_notification_style(len(dados)))
             
             
             
@@ -106,18 +106,5 @@ with placeholder.container():
                         st.write(msg)
                         
 
-if st.button("🔄 Forçar Atualização"):
+if st.button("🔄 Atualizar lista de Boatos"):
         st.rerun()
-
-# Sidebar para controle
-st.sidebar.header("Configurações")
-auto_refresh = st.sidebar.checkbox("Atualização Automática (20s)", value=True)
-
-# Lógica de atualização
-if "last_update" not in st.session_state:
-    st.session_state.last_update = time.time()
-
-# Script de auto-refresh simples
-if auto_refresh:
-    time.sleep(20)
-    st.rerun()
