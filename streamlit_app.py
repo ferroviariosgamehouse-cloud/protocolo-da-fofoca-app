@@ -26,7 +26,7 @@ if submitted:
         }
         
         try:
-            url = "http://localhost:8081/fofoca"
+            url = "https://anypoint.mulesoft.com/mocking/api/v1/links/b4a9d1f1-ff14-4de9-b3fd-58cd7497db74/fofoca"
             # O timeout de 2 segundos evita que o Streamlit trave se o Mule estiver offline
             response = requests.post(url, json=payload, timeout=2)
             
