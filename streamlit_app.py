@@ -80,6 +80,9 @@ def get_notification_style(count):
     # Retorna o ícone + o número no alto em negrito
     return count_top
 
+if st.button("🔄 Atualizar lista de Boatos"):
+        st.rerun()
+
 with placeholder.container():
     dados = fetch_fofocas_from_mule()
     if dados is None:
@@ -106,5 +109,3 @@ with placeholder.container():
                         st.write(msg)
                         
 
-if st.button("🔄 Atualizar lista de Boatos"):
-        st.rerun()
