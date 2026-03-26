@@ -9,7 +9,7 @@ st.set_page_config(page_title="MuleSoft", layout="wide")
 st.title("🗣️ Meetup da Fofoca")
 
 urlLerFofoca = "https://deliverydafofoca-2vs98m.5sc6y6-4.usa-e2.cloudhub.io/api/fofocas"
-urlEspalharFofoca = "https://fofoca-app-2vs98m.5sc6y6-2.usa-e2.cloudhub.io/publish"
+urlEspalharFofoca = "https://fofocaservice-2vs98m.5sc6y6-4.usa-e2.cloudhub.io/publish"
 
 col_envio, col_monitor = st.columns([1, 1.5], gap="large")
 
