@@ -8,7 +8,8 @@ st.set_page_config(page_title="MuleSoft", layout="wide")
 
 st.title("🗣️ Meetup da Fofoca")
 
-url = "	https://deliverydafofoca-2vs98m.5sc6y6-4.usa-e2.cloudhub.io/api/fofocas"
+urlLerFofoca = "https://deliverydafofoca-2vs98m.5sc6y6-4.usa-e2.cloudhub.io/api/fofocas"
+urlEspalharFofoca = "https://fofoca-app-2vs98m.5sc6y6-2.usa-e2.cloudhub.io/publish"
 
 col_envio, col_monitor = st.columns([1, 1.5], gap="large")
 
@@ -39,7 +40,7 @@ if submitted:
         try:
             
             # O timeout de 2 segundos evita que o Streamlit trave se o Mule estiver offline
-            response = requests.post(url, json=payload, timeout=2)
+            response = requests.post(urlEspalharFofoca, json=payload, timeout=2)
             
             if response.status_code in [200, 201]:
                 st.success("✅ O Mule recebeu a fofoca!")                
@@ -56,7 +57,7 @@ with col_monitor:
     # Função para consumir a API do Mule
     def fetch_fofocas_from_mule():
         try:
-            response = requests.get(url, timeout=5)
+            response = requests.get(urlLerFofoca, timeout=10)
             if response.status_code == 200:
                 return response.json()
             else:
@@ -80,8 +81,7 @@ def get_notification_style(count):
     # Retorna o ícone + o número no alto em negrito
     return count_top
 
-if st.button("🔄 Atualizar lista de Boatos"):
-        st.rerun()
+
 
 with placeholder.container():
     dados = fetch_fofocas_from_mule()
@@ -108,4 +108,5 @@ with placeholder.container():
                         st.caption(f"Enviado por: {emissor}")
                         st.write(msg)
                         
-
+if st.button("🔄 Atualizar lista de Boatos"):
+        st.rerun()
