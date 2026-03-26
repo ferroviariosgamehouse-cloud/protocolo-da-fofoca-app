@@ -8,7 +8,7 @@ st.set_page_config(page_title="MuleSoft", layout="wide")
 
 st.title("🗣️ Meetup da Fofoca")
 
-url = "https://anypoint.mulesoft.com/mocking/api/v1/links/15a23c7c-fc30-4cb2-99f0-18868470d8bd/fofoca"
+url = "	https://deliverydafofoca-2vs98m.5sc6y6-4.usa-e2.cloudhub.io/api/fofocas"
 
 col_envio, col_monitor = st.columns([1, 1.5], gap="large")
 
